@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { TUser } from "@/types";
 
 export const loginUser = async (data: FieldValues) => {
-    const res = await fetch('http://localhost:5000/api/v1/auth/login', {
+    const res = await fetch('https://portfolio-backend-two-snowy.vercel.app/api/v1/auth/login', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
