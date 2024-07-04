@@ -24,7 +24,7 @@ const BlogPostModal = ({ open, setOpen }: TProps) => {
         formData.append('image', values?.file as File)
         let imgData;
         if (values?.file) {
-            const res = await fetch('https://api.imgbb.com/1/upload?key=906ad31c22599d2496d40f6792a5c559', {
+            const res = await fetch('https://api.imgbb.com/1/upload?key=911aa569c7b137d0c46ecda476b6c122', {
                 method: 'POST',
                 body: formData
             })

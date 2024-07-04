@@ -1,5 +1,5 @@
-"use client"
-import { Avatar, Box, Button, IconButton, Pagination, Stack, TextField } from "@mui/material";
+'use client'
+import { Avatar, Box, Button, IconButton, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -9,41 +9,30 @@ import Link from "next/link";
 import Loader from "@/components/shared/Loader/Loader";
 import { TBlog } from "@/types";
 import BlogPostModal from "./components/BlogPostModal";
-import { useDeleteBlogMutation, useGetAllBlogsQuery } from "@/redux/api/blogs/blogsApi";
 import EditBlogModal from "./components/EditBlogModal";
+import { useDeleteBlogMutation, useGetAllBlogsQuery } from "@/redux/api/blogs/blogsApi";
 
 const CreateBlogPage = () => {
     const [blogId, setBlogId] = useState('');
-    const [limit, setLimit] = useState(5);
-    const [searchTerm, setSearchTerm] = useState<string>('')
-    const query: Record<string, any> = {};
-    //   const debounced = useDebounced({ searchTerm: searchTerm, delay: 500 });
-    //   if (!!debounced) {
-    //     query['searchTerm'] = searchTerm;
-    //   }
-    //   query['page']=page;
-    //   query['limit']=limit;
+    const [searchTerm, setSearchTerm] = useState<string>('');
     const [open, setOpen] = useState<boolean>(false);
     const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
-
-    const [blogData, setBlogData] = useState([]);
-    const { data: blogs, isLoading } = useGetAllBlogsQuery({})
-    const [deleteBlog] = useDeleteBlogMutation()
+    const [blogData, setBlogData] = useState<TBlog[]>([]);
+    const { data: blogs, isLoading } = useGetAllBlogsQuery({});
+    const [deleteBlog] = useDeleteBlogMutation();
 
     useEffect(() => {
-        const modifyBlogs = blogs?.map((item: TBlog) => {
-            return {
+        if (blogs) {
+            const modifiedBlogs = blogs.map((item: TBlog) => ({
                 id: item?._id,
-                ...item
-            }
+                authorName: item?.authorName,
+                file: item?.file,
+                quote: item?.quote
+            }));
+            setBlogData(modifiedBlogs);
+        }
+    }, [blogs]);
 
-        })
-        setBlogData(modifyBlogs)
-    }, [blogs])
-
-
-
-    // delete trip
     const handleDelete = async (id: string) => {
         const result = await Swal.fire({
             title: "Are you sure?",
@@ -58,36 +47,34 @@ const CreateBlogPage = () => {
         if (result.isConfirmed) {
             try {
                 const res = await deleteBlog(id).unwrap();
-                // console.log(res);
                 if (res?._id) {
                     Swal.fire({
                         title: "Deleted!",
                         text: "Blog has been deleted.",
                         icon: "success"
                     });
-                }
-                else {
+                } else {
                     Swal.fire({
                         title: "Error!",
-                        text: "There was an error deleting blog.",
+                        text: "There was an error deleting the blog.",
                         icon: "error"
                     });
                 }
             } catch (error) {
                 Swal.fire({
                     title: "Error!",
-                    text: "There was an error deleting blog.",
+                    text: "There was an error deleting the blog.",
                     icon: "error"
                 });
             }
         }
     };
 
-const handleEdit=(id:string)=>{
-    setEditModalOpen(true);
-    setBlogId(id)
+    const handleEdit = (id: string) => {
+        setBlogId(id);
+        setEditModalOpen(true);
+    };
 
-}
     const columns: GridColDef[] = [
         {
             field: "authorName",
@@ -98,76 +85,62 @@ const handleEdit=(id:string)=>{
             field: "file",
             headerName: 'Author Photo',
             flex: 1,
-            renderCell: ({ row }) => {
-                return (
-                    <Box>
-                        <Avatar className="border-2" src={row?.file} alt="profile" />
-                    </Box>
-                )
-            }
+            renderCell: ({ row }) => (
+                <Box>
+                    <Avatar src={row?.file} alt="profile" />
+                </Box>
+            )
         },
         {
             field: "quote",
             headerName: 'Quote',
             flex: 1
         },
-
-
         {
             field: "action",
             headerName: 'Action',
             flex: 1,
             headerAlign: 'center',
             align: "center",
-            renderCell: ({ row }) => {
-                return (
-                    <Box>
-
-                        <IconButton aria-label='delete' onClick={() => handleDelete(row?.id)} sx={{ color: "red" }}
-                        >
-                            <DeleteForeverIcon />
-                        </IconButton>
-
-                        {/* <Box> */}
-                        <IconButton aria-label='edit' onClick={()=>handleEdit(row?.id)}>
-                            <EditIcon />
-                        </IconButton>
-                        <EditBlogModal open={editModalOpen} setOpen={setEditModalOpen} blogId={blogId}/>
-                        {/* </Box> */}
-
-                    </Box>
-                )
-            }
+            renderCell: ({ row }) => (
+                <Box>
+                    <IconButton aria-label='delete' onClick={() => handleDelete(row?.id)} sx={{ color: "red" }}>
+                        <DeleteForeverIcon />
+                    </IconButton>
+                    <IconButton aria-label='edit' onClick={() => handleEdit(row?.id)}>
+                        <EditIcon />
+                    </IconButton>
+                    <EditBlogModal open={editModalOpen} setOpen={setEditModalOpen} blogId={blogId} />
+                </Box>
+            )
         },
-    ]
-
-
+    ];
 
     return (
-        <Box>
-            <Stack direction="row" justifyContent="space-between">
-                <Button size="small" onClick={() => setOpen(true)}>Create a new Blog</Button>
-                <TextField size="small" label="search" onChange={(e) => setSearchTerm(e.target.value)} />
-                <BlogPostModal open={open as boolean} setOpen={setOpen} />
+        <Box p={4}>
+            <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+                <Button variant="contained" onClick={() => setOpen(true)}>Create a New Blog</Button>
+                <TextField
+                    size="small"
+                    label="Search"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    InputProps={{ sx: { backgroundColor: "#f0f0f0" } }}
+                />
+                <BlogPostModal open={open} setOpen={setOpen} />
             </Stack>
-            {
-                isLoading ?
-                    (
-                        <Loader />
-                    )
-                    :
-                    (
-                        <Box mt={2}>
-                            <DataGrid
-                                rows={blogData || []}
-                                columns={columns}
-                                hideFooterPagination
-
-
-                            />
-                        </Box>
-                    )
-            }
+            {isLoading ? (
+                <Loader />
+            ) : (
+                <Box mt={4}>
+                    <DataGrid
+                        rows={blogData}
+                        columns={columns}
+                        autoHeight
+                        disableColumnMenu
+                        disableRowSelectionOnClick
+                    />
+                </Box>
+            )}
         </Box>
     );
 };

@@ -9,7 +9,7 @@ const LocalPage = () => {
             <div className="hero bg-base-200 min-h-screen">
   <div className="hero-content text-center">
     <div className="max-w-md">
-      <h1 className="text-5xl font-bold">Hello Pritom</h1>
+      <h1 className="text-5xl font-bold">Hello Faysal</h1>
       <p className="py-6">
       Next.js is a React framework enabling server-side rendering and static site generation for optimized performance.
       </p>

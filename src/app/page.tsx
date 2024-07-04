@@ -63,7 +63,7 @@ const LoginPage = () => {
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                 <MyForm onSubmit={handleLogin} resolver={zodResolver(loginValidationSchema)}
-                defaultValues={{email:"pritom@example.com",password:"password123"}}
+                defaultValues={{email:"fahim@example.com",password:"faysal1234"}}
                 >
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
@@ -134,24 +134,19 @@ const LoginPage = () => {
                         <div>
                             <a href="#"
                                 className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                <Image className="h-5 w-5" width={20}
-                                height={20} src="https://www.svgrepo.com/show/512120/facebook-176.svg"
-                                    alt="facebook"/>
+                                <Image src="/facebook.svg" alt="Facebook" width={20} height={20} />
                             </a>
                         </div>
                         <div>
                             <a href="#"
                                 className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                <Image className="h-5 w-5" width={20} height={20} src="https://www.svgrepo.com/show/513008/twitter-154.svg"
-                                    alt="twitter"/>
+                                <Image src="/twitter.svg" alt="Twitter" width={20} height={20} />
                             </a>
                         </div>
                         <div>
                             <a href="#"
                                 className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                <Image className="h-6 w-6" width={24}
-                                height={24} src="https://www.svgrepo.com/show/506498/google.svg"
-                                    alt="google"/>
+                                <Image src="/google.svg" alt="Google" width={24} height={24} />
                             </a>
                         </div>
                     </div>
